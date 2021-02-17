@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,22 +38,38 @@ public class ListaAlunosAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup viewGroup) {
-        View viewCriada = LayoutInflater
-                .from(context)
-                .inflate(R.layout.item_aluno, viewGroup, false);
+        View viewCriada = criaView(viewGroup);
+
+        Aluno alunoRetornado = alunos.get(position);
+
+        vincula(viewCriada, alunoRetornado);
+
         return viewCriada;
     }
 
-    public void clear() {
-        alunos.clear();
+    private void vincula(View view, Aluno aluno) {
+        TextView name = view.findViewById(R.id.tvName);
+        TextView phone = view.findViewById(R.id.tvPhone);
+        name.setText(aluno.getNome());
+        phone.setText(aluno.getTelefone());
+    }
+
+    private View criaView(ViewGroup viewGroup) {
+        return LayoutInflater
+                .from(context)
+                .inflate(R.layout.item_aluno, viewGroup, false);
     }
 
 
-    public void addAll(List<Aluno> alunos) {
+
+    public void atualiza(List<Aluno> alunos){
+        this.alunos.clear();
         this.alunos.addAll(alunos);
+        notifyDataSetChanged();
     }
 
     public void remove(Aluno aluno) {
         alunos.remove(aluno);
+        notifyDataSetChanged();  //notifica que o dataset foi modificado!
     }
 }

@@ -1,25 +1,22 @@
 package br.com.dipaulamobilesolutions.agenda.ui.activity;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.ContextMenu;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
 import android.widget.ListView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import br.com.dipaulamobilesolutions.agenda.R;
 import br.com.dipaulamobilesolutions.agenda.dao.AlunoDAO;
@@ -31,8 +28,8 @@ import static br.com.dipaulamobilesolutions.agenda.ui.activity.ConstantesActivit
 public class ListaAlunosActivity extends AppCompatActivity {
 
     private FloatingActionButton fabAdicionaAluno;
-    private final AlunoDAO dao = new AlunoDAO();
     private ListaAlunosAdapter adapter;
+    private final AlunoDAO dao = new AlunoDAO();
 
 
     @Override
@@ -46,10 +43,6 @@ public class ListaAlunosActivity extends AppCompatActivity {
         configuraFabNovoAluno();
         configuraLista();
 
-        //dados estaticos serão recriados ao rotacionar a tela, já que a activity é destruida e recriada novamente
-        dao.salva(new Aluno("Fernando", "16994153565", "454545@sdss"));
-        dao.salva(new Aluno("Fernando", "16994153565", "454545@sdss"));
-        dao.salva(new Aluno("Fernando", "16994153565", "454545@sdss"));
 
 
     }
@@ -68,8 +61,7 @@ public class ListaAlunosActivity extends AppCompatActivity {
         //se nao colocar if e else todos os itens do menu vao ter o mesmo funcionamento
         if (item.getItemId() == R.id.menu_remove) {
             AdapterView.AdapterContextMenuInfo menuInfo = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-            Aluno aluEscolhido = adapter.getItem(menuInfo.position);
-            removerAlunoDaLista(aluEscolhido);
+            confirmaRemocao(menuInfo);
         }
 
 
@@ -77,11 +69,28 @@ public class ListaAlunosActivity extends AppCompatActivity {
 
     }
 
+    private void confirmaRemocao(AdapterView.AdapterContextMenuInfo menuInfo) {
+        Aluno alunoEscolhido = adapter.getItem(menuInfo.position);
+
+        //Padrão builder (construir)
+        new AlertDialog
+                .Builder(this)
+                .setTitle("Remover aluno")
+                .setMessage("tem certeza que deseja remover este aluno?")
+                .setPositiveButton("Sim", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        removerAlunoDaLista(alunoEscolhido);
+                    }
+                })
+                .setNegativeButton("Não", null)
+                .show();
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
-        adapter.clear();
-        adapter.addAll(dao.todos());
+        adapter.atualiza(dao.todos());
     }
 
     private void configuraFabNovoAluno() {
@@ -133,8 +142,6 @@ public class ListaAlunosActivity extends AppCompatActivity {
 
     private void configuraAdapter(ListView lvAlunos) {
         //dataset lista interna de items de um adapter
-
-
         adapter = new ListaAlunosAdapter(this);
         lvAlunos.setAdapter(adapter);
     }
