@@ -1,8 +1,6 @@
 package br.com.dipaulamobilesolutions.agenda.ui.activity;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.ContextMenu;
@@ -18,10 +16,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import br.com.dipaulamobilesolutions.agenda.R;
-import br.com.dipaulamobilesolutions.agenda.dao.AlunoDAO;
 import br.com.dipaulamobilesolutions.agenda.model.activity.Aluno;
 import br.com.dipaulamobilesolutions.agenda.ui.ListaAlunosView;
-import br.com.dipaulamobilesolutions.agenda.ui.adapter.ListaAlunosAdapter;
 
 import static br.com.dipaulamobilesolutions.agenda.ui.activity.ConstantesActivities.CHAVE_ALUNO;
 
@@ -54,8 +50,7 @@ public class ListaAlunosActivity extends AppCompatActivity {
 
         //se nao colocar if e else todos os itens do menu vao ter o mesmo funcionamento
         if (item.getItemId() == R.id.menu_remove) {
-            AdapterView.AdapterContextMenuInfo menuInfo = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-            listaAlunosView.confirmaRemocao(menuInfo);
+            listaAlunosView.confirmaRemocao(item);
         }
 
 
